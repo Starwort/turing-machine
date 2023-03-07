@@ -1,0 +1,12 @@
+Machine = _{ Rule+ ~ !!EOI }
+
+Rule = { ident ~ Transition+ }
+
+Transition = { ident ~ "/" ~ ident ~ "/" ~ TransitionDirection ~ ("/" ~ ident)? }
+TransitionDirection = { "<" | ">" | "=" | "!" | "?" }
+
+ident = @{ !("/" | WHITESPACE | TransitionDirection) ~ ANY ~ ident? }
+
+WHITESPACE = _{ " " | NEWLINE }
+COMMENT = _{ "//" ~ (!NEWLINE ~ ANY)* ~ NEWLINE | BlockComment }
+BlockComment = _{"/*" ~ (BlockComment | (!"*/" ~ ANY))* ~ "*/" }
