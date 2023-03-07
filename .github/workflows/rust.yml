@@ -1,0 +1,32 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - id: get-version
+      run: echo "version=$(rustc --version)" >> $GITHUB_OUTPUT
+    - name: Cache
+      uses: actions/cache@v3.2.6
+      id: cache
+      with:
+        path: target
+        key: ${{ runner.os }}-${{ steps.get-version.outputs.version }}-${{ hashFiles('**/Cargo.lock') }}
+    - name: Build
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: cargo build --verbose
+    - name: Run tests
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: cargo test --verbose
