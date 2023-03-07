@@ -1,4 +1,8 @@
-Machine = _{ Rule+ ~ !!EOI }
+// `!!SOI` and `!!EOI` are hacks.
+// `!!SOI` is used to allow comments at the beginning of the file, whereas
+// `!!EOI` serves two purposes; to force Pest to parse the entire input file,
+// and to allow comments at the end of the file.
+Machine = _{ !!SOI ~ Rule+ ~ !!EOI }
 
 Rule = { ident ~ Transition+ }
 
